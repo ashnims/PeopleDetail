@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import People from "./component/People";
+import { Navbar } from "./component/Navbar";
 
-function App() {
+export default function App() {
+  const [people, setPeople] = useState([]);
+  useEffect(() => {
+    const file = async () => {
+      await axios
+        .get(
+          "https://randomuser.me/api/?inc=gender,name,nat,location,picture,email&results=20"
+        )
+        .then((res) => {
+          console.log(res.data.results);
+          setPeople(res.data.results);
+        });
+    };
+    file();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Navbar />
+      <Switch>
+        <Route exact path="/">
+          <People allusers={people} />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
-
-export default App;
